@@ -71,20 +71,8 @@ namespace CaseStudyFinal.Service
             }
         }
 
-        public async Task SendApplicationApprovedEmail(/*string aadharNo*/ string trackerId, string email, string applId)
+        public async Task SendApplicationStatusEmail(string trackerId, string email, string subject, string body)
         {
-            /*var applicationTracking = await _context.ApplicationTracking
-        .Include(at => at.PersonalDetails)
-        .FirstOrDefaultAsync(at => at.AadharNo == aadharNo);
-
-            if (applicationTracking == null || applicationTracking.PersonalDetails == null)
-            {
-                Console.WriteLine("Application tracking record or personal details not found.");
-                return;
-            }*/
-
-            /*var emailId = applicationTracking.PersonalDetails.EmailId;*/
-
             // Fetch account number based on trackerId
             var account = await _context.Accounts.FirstOrDefaultAsync(acc => acc.TrackerID == trackerId);
 
@@ -106,13 +94,13 @@ namespace CaseStudyFinal.Service
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.From = new MailAddress("sukanyakale2@gmail.com");
                 mailMessage.To.Add((MailAddress)new MailboxAddress("",email)); // Guest's email address
-                mailMessage.Subject = "Home Loan Application was approved";
-                mailMessage.Body = $"Your Application has been Approved!. The approved Loan Amount has been credited to the account given : \n ApplicationID: {applId}\nTrackingID: {trackerId}\nAccount Number: {accountNumber}.\n\n Regards,\nTeam HL Bank";
+                mailMessage.Subject = subject;
+                mailMessage.Body = body /**/;
 
                 try
                 {
                     await smtpClient.SendMailAsync(mailMessage);
-                    Console.WriteLine("Application Approved email sent successfully!");
+                    Console.WriteLine("Application Staus email sent successfully!");
                 }
                 catch (Exception ex)
                 {
@@ -121,7 +109,7 @@ namespace CaseStudyFinal.Service
             }
         }
 
-        public async Task SendApplicationRejectedEmail(string aadharNo)
+        /*public async Task SendApplicationRejectedEmail(string aadharNo)
         {
             var applicationTracking = await _context.ApplicationTracking
         .Include(at => at.PersonalDetails)
@@ -169,7 +157,7 @@ namespace CaseStudyFinal.Service
                     Console.WriteLine($"Failed to send application submitted email: {ex.Message}");
                 }
             }
-        }
+        }*/
 
         public async Task SendEmailOTP(string recipientEmail, string body, string subject)
         {

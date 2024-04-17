@@ -69,13 +69,18 @@ namespace CaseStudyFinal.Repositories
 
                     //var personalDetails = _context.PersonalDetails.FirstOrDefaultAsync(pd => pd.AadharNo == update.AadharNo);
 
-                    await _emailService.SendApplicationApprovedEmail(update.TrackerID, Email, update.ApplicationID);
+                    string subject = "Home Loan Application was approved";
+                    string body = $"Your Application has been Approved!. The approved Loan Amount has been credited to the account given : " +
+                    $"\n ApplicationID: {update.ApplicationID}\nTrackingID: {update.TrackerID}\nAccount Number: {account.AccountNumber}.\n\n Regards,\nTeam HL Bank";
+
+                    await _emailService.SendApplicationStatusEmail(update.TrackerID, Email, subject, body);
                 }
                 else if (update.Status == "Rejected")
                 {
-                    string aadharNo = update.AadharNo;
-
-                    await _emailService.SendApplicationRejectedEmail(aadharNo);
+                    
+                    string subject = "Home Loan Application was rejected";
+                    string body = "We regret to inform you that your application was rejected";
+                    await _emailService.SendApplicationStatusEmail(update.TrackerID, Email, subject, body);
                 }
                 else
                 {
