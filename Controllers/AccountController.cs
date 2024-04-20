@@ -30,10 +30,7 @@ namespace CaseStudyFinal.Controllers
                     error = "Account Number not found"
                 });
             }
-            return Ok(new
-            {
-                result = account
-            });
+            return Ok(account);
         }
     }
 }
