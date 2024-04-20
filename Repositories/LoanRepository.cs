@@ -58,5 +58,8 @@ namespace CaseStudyFinal.Repositories
         {
             return _context.Loans.Any(e => e.ApplicationId == id);
         }
+
+
+
     }
 }

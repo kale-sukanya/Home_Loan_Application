@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CaseStudyFinal.Models
 {
     public class LoanDetails
     {
-
         [Key]
         [RegularExpression(@"^\d{4}$")]
         public string ApplicationId { get; set; }
@@ -42,10 +42,8 @@ namespace CaseStudyFinal.Models
         [RegularExpression(@"^(?!0+(\.0+)?$)([1-9]\d{4,}|[1-9]\d{3,}\.\d{2})$", ErrorMessage = "Max loan grantable amount cannot be less than 10,000.")]
         public double MaxLoanAmountGrantable { get; set; }
 
-
         [Required(ErrorMessage = "InterestRate is required")]
         public double InterestRate { get; set; } = 8.5;
-
 
         [Required(ErrorMessage = "Loan amount is required")]
         [RegularExpression(@"^(?!0+(\.0+)?$)([1-9]\d{4,}|[1-9]\d{3,}\.\d{2})$", ErrorMessage = "Loan amount cannot be less than 10,000.")]
@@ -55,5 +53,8 @@ namespace CaseStudyFinal.Models
         [RegularExpression(@"^[1-9][0-9]*$", ErrorMessage = "Tenure cannot be zero.")]
         public int Tenure { get; set; }
 
+        [DataType(DataType.Date)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime AppliedOn { get; set; } 
     }
 }

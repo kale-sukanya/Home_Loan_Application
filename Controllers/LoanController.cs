@@ -1,4 +1,5 @@
-﻿using CaseStudyFinal.Interface;
+﻿using CaseStudyFinal.Data;
+using CaseStudyFinal.Interface;
 using CaseStudyFinal.Models;
 using CaseStudyFinal.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +14,12 @@ namespace CaseStudyFinal.Controllers
     public class LoanController : ControllerBase
     {
         private readonly ILoanService _service;
+        private readonly CaseStudyFinalContext _context;
 
-        public LoanController(ILoanService service)
+        public LoanController(ILoanService service, CaseStudyFinalContext context)
         {
             _service = service;
+            _context = context;
         }
 
         [HttpGet("/AdminGetAllLoanDetails")]
@@ -56,7 +59,7 @@ namespace CaseStudyFinal.Controllers
         }
 
         [HttpPost("/userPostLoanDetails")]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         public async Task<ActionResult<LoanDetails>> PostLoanDetails(LoanDetails loanDetails)
         {
 
@@ -77,5 +80,43 @@ namespace CaseStudyFinal.Controllers
                 msg = "Loan Details Deleted Successfully"
             });
         }
+
+        [HttpGet("applications/{email}")]
+        public IActionResult GetApplicationsByEmail(string email)
+        {
+            var applicationsData = (from ld in _context.Loans
+                                    join pd in _context.PersonalDetails on ld.ApplicationId equals pd.ApplicationId
+                                    join d in _context.Documents on ld.ApplicationId equals d.ApplicationId
+                                    where pd.EmailId == email
+                                    select new
+                                    {
+                                        LoanDetails = ld,
+                                        PersonalDetails = pd,
+                                        Document = d
+                                    }).ToList();
+
+            var loanDetailsArray = applicationsData.Select(data => data.LoanDetails).Distinct().ToList();
+            var personalDetailsArray = applicationsData.Select(data => data.PersonalDetails).Distinct().ToList();
+
+            var documentsArrays = new List<List<Documents>>();
+            foreach (var loanApplication in loanDetailsArray)
+            {
+                var applicationDocuments = applicationsData
+                    .Where(data => data.LoanDetails.ApplicationId == loanApplication.ApplicationId)
+                    .Select(data => data.Document)
+                    .ToList();
+                documentsArrays.Add(applicationDocuments);
+            }
+
+            var responseData = new
+            {
+                LoanDetails = loanDetailsArray,
+                PersonalDetails = personalDetailsArray,
+                Documents = documentsArrays
+            };
+
+            return Ok(responseData);
+        }
     }
+
 }
