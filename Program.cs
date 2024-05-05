@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using CaseStudyFinal.Models;
 using CaseStudyFinal.Data;
 using CaseStudyFinal.Service;
 using CaseStudyFinal.Repositories;
@@ -12,9 +11,8 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-//EmailService
+//Services
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ILoanService, LoanService>();
 builder.Services.AddScoped<ILoanRepository, LoanRepository>();
@@ -26,14 +24,6 @@ builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<IDocuments, DocumentsRepository>();
 builder.Services.AddHttpContextAccessor();
 
-
-/*builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowOrigin",
-        builder => builder.WithOrigins("http://localhost:4200") // Adjust this URL to match your Angular app's URL
-                          .AllowAnyHeader()
-                          .AllowAnyMethod());
-});*/
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -93,12 +83,12 @@ builder.Services.AddDbContext<CaseStudyFinalContext>(item => item.UseSqlServer(c
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CaseStudyFinal v1"));
 }
+
 app.UseCors(options =>
 {
     options.AllowAnyHeader();

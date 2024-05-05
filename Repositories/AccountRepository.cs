@@ -2,8 +2,6 @@
 using CaseStudyFinal.Interface;
 using CaseStudyFinal.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CaseStudyFinal.Repositories
 {

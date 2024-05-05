@@ -17,13 +17,6 @@ namespace CaseStudyFinal.Controllers
             _registerService = registerService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Register>>> GetRegister()
-        {
-            // Implement if needed
-            return Ok();
-        }
-
         [HttpPost]
         [Route("/register")]
         public async Task<IActionResult> RegisterAsync(Register model)
@@ -49,15 +42,32 @@ namespace CaseStudyFinal.Controllers
         [Route("/Login")]
         public async Task<IActionResult> Login(Register model)
         {
-            var token = await _registerService.LoginAsync(model);
-            if (token != null)
+            var result = await _registerService.LoginAsync(model);
+            if (result != null)
             {
-                return Ok(new
+                if(result == "Check Password and try again")
                 {
-                    email = model.EmailId, 
-                    role = model.Role,
-                    token = token
-                }) ;
+                    return BadRequest(new
+                    {
+                        msg = result
+                    });
+                }
+                else if(result == "Invalid Role")
+                {
+                    return BadRequest(new
+                    {
+                        msg = result
+                    }) ;
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        email = model.EmailId,
+                        role = model.Role,
+                        token = result
+                    });
+                }
                 
             }
             else
@@ -76,7 +86,7 @@ namespace CaseStudyFinal.Controllers
             string result = await _registerService.SendOtp(email);
             if(result == "User not found")
             {
-                return BadRequest("User not found");
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -87,6 +97,18 @@ namespace CaseStudyFinal.Controllers
         public async Task<IActionResult> ResetPassword(ResetPassDto request)
         {
             string result = await _registerService.ResetPassword(request);
+            if(result == "User not found")
+            {
+                return BadRequest(result);
+            }
+            else if(result == "Invalid OTP")
+            {
+                return BadRequest(result);
+            }
+            else if(result == "New password is required")
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
 

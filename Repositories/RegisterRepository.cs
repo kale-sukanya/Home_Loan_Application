@@ -2,8 +2,6 @@
 using CaseStudyFinal.Interface;
 using CaseStudyFinal.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CaseStudyFinal.Repositories
 {
@@ -18,44 +16,84 @@ namespace CaseStudyFinal.Repositories
 
         public async Task<bool> EmailExistsAsync(string emailId)
         {
-            return await _context.Registers.AnyAsync(r => r.EmailId == emailId);
+            try
+            {
+                return await _context.Registers.AnyAsync(r => r.EmailId == emailId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while checking if email exists.", ex);
+            }
         }
 
         public async Task<bool> RegisterUserAsync(Register model)
         {
-            var newUser = new Register
+            try
             {
-                EmailId = model.EmailId,
-                PhoneNumber = model.PhoneNumber,
-                Password = model.Password,
-                //Role = "User"
-            };
+                var newUser = new Register
+                {
+                    EmailId = model.EmailId,
+                    PhoneNumber = model.PhoneNumber,
+                    Password = model.Password
+                };
 
-            // Add the new user to the database
-            _context.Registers.Add(newUser);
-            await _context.SaveChangesAsync();
-            return true;
+                _context.Registers.Add(newUser);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while registering user.", ex);
+            }
         }
 
         public Register GetUserByEmailAndPassword(string emailId, string password, string role)
         {
-            return _context.Registers.FirstOrDefault(r => r.EmailId == emailId && r.Password == password && r.Role == role);
+            try
+            {
+                return _context.Registers.FirstOrDefault(r => r.EmailId == emailId && r.Password == password && r.Role == role);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while getting user by email and password.", ex);
+            }
         }
 
         public Register GetUserByEmail(string emailId)
         {
-            return _context.Registers.FirstOrDefault(u => u.EmailId == emailId);
+            try
+            {
+                return _context.Registers.FirstOrDefault(u => u.EmailId == emailId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while getting user by email.", ex);
+            }
         }
 
         public Register GetUserByPhone(string phone)
         {
-            return _context.Registers.FirstOrDefault(u => u.PhoneNumber == phone);
+            try
+            {
+                return _context.Registers.FirstOrDefault(u => u.PhoneNumber == phone);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while getting user by phone number.", ex);
+            }
         }
 
         public async Task UpdatePasswordAsync(Register user, string newPassword)
         {
-            user.Password = newPassword;
-            await _context.SaveChangesAsync();
+            try
+            {
+                user.Password = newPassword;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while updating user password.", ex);
+            }
         }
     }
 }

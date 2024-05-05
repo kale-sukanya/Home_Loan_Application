@@ -3,7 +3,6 @@ using CaseStudyFinal.Data;
 using CaseStudyFinal.Interface;
 using CaseStudyFinal.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace CaseStudyFinal.Repositories
 {
@@ -39,16 +38,16 @@ namespace CaseStudyFinal.Repositories
 
         public async Task<Documents> Upload(IFormFile file, Documents doc)
         {
-            //1.upload to api/images folder
-
+            //this is my storage path 
             var localPath = Path.Combine(_webHostEnvironment.ContentRootPath,
                 "Documents", $"{doc.FileName}{doc.FileExtension}");
 
             using var stream = new FileStream(localPath, FileMode.Create);
             await file.CopyToAsync(stream);
 
-            //2.Update the database
             var httpRequest = httpContextAccessor.HttpContext.Request;
+
+            //this is my url path
             var urlPath = $"{httpRequest.Scheme}://{httpRequest.Host}{httpRequest.PathBase}/Documents/{doc.FileName}{doc.FileExtension}";
 
             doc.Url = urlPath;

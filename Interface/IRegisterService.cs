@@ -8,8 +8,6 @@ namespace CaseStudyFinal.Interface
     {
         Task<bool> RegisterUserAsync(Register model);
         Task<string> LoginAsync(Register model);
-        //Task<string> ForgotPasswordAsync(string emailId, string newPassword);
-        Task<string> ForgotUserAsync(string phone);
         Task<string> SendOtp(string emailId);
         Task<string> ResetPassword(ResetPassDto request);
     }

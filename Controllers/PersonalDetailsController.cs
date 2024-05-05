@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CaseStudyFinal.Models;
-using CaseStudyFinal.Data;
+﻿using CaseStudyFinal.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CaseStudyFinal.Service;
 using CaseStudyFinal.Interface;
 
 namespace OnlineHomeLoan.Controllers
@@ -32,7 +24,7 @@ namespace OnlineHomeLoan.Controllers
         }
 
         [HttpGet("GetDetailsById/{id}")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<PersonalDetails>> GetPersonalDetails(string id)
         {
             var personalDetails = await _personalDetailsRepository.GetPersonalDetailsById(id);
@@ -46,23 +38,6 @@ namespace OnlineHomeLoan.Controllers
           
         }
 
-        [HttpPut("UpdateDetails/{id}")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> PutPersonalDetails(string id, PersonalDetails personalDetails)
-        {
-            try
-            {
-                await _personalDetailsRepository.UpdatePersonalDetails(id, personalDetails);
-                return NoContent();
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new
-                {
-                    errorMessage = ex.Message
-                });
-            }
-        }
 
         [HttpPost("PostPersonalDetails")]
         [Authorize(Roles = "User")]
@@ -82,13 +57,6 @@ namespace OnlineHomeLoan.Controllers
             });
         }
 
-        [HttpDelete("DeletePersonalDetails/{id}")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> DeletePersonalDetails(string id)
-        {
-            await _personalDetailsRepository.DeletePersonalDetails(id);
-            return NoContent();
-        }
     }
 
 }

@@ -1,13 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using CaseStudyFinal.DTO;
+﻿using CaseStudyFinal.DTO;
 using CaseStudyFinal.Interface;
 using CaseStudyFinal.Models;
-using CaseStudyFinal.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CaseStudyFinal.Controllers
 {
@@ -32,7 +27,7 @@ namespace CaseStudyFinal.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        //[Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> GetApplicationStatus([FromRoute] string id)
         {
             var application = await _repository.GetApplicationById(id);
@@ -51,15 +46,13 @@ namespace CaseStudyFinal.Controllers
                 ApplicationID = application.ApplicationID,
                 Status = application.Status,
                 AadharNo = application.AadharNo,
-                LoanDetails = application.LoanDetails,
-                PersonalDetails = application.PersonalDetails,
             });
         }
 
 
         [HttpPut]
         [Route("UpdateStatus/{trackerId}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStatusAsync(string trackerId, [FromBody] UpdateStatusDto model, string email)
         {
             try

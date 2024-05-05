@@ -1,9 +1,6 @@
 ﻿using CaseStudyFinal.Interface;
-using CaseStudyFinal.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CaseStudyFinal.Controllers
 {

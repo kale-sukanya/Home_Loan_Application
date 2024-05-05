@@ -1,6 +1,5 @@
 ﻿using CaseStudyFinal.Interface;
 using CaseStudyFinal.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaseStudyFinal.Controllers
@@ -19,9 +18,8 @@ namespace CaseStudyFinal.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDocuments()
         {
-            // call image repo
-            var images = await _documents.GetAll();
-            return Ok(images);
+            var docs = await _documents.GetAll();
+            return Ok(docs);
         }
 
 
@@ -32,7 +30,6 @@ namespace CaseStudyFinal.Controllers
             ValidateFileUpload(file);
             if (ModelState.IsValid)
             {
-                //file Upload
                 var doc = new Documents
                 {
                     FileExtension = Path.GetExtension(file.FileName).ToLower(),
@@ -43,6 +40,7 @@ namespace CaseStudyFinal.Controllers
 
                 await _documents.Upload(file, doc);
 
+
                 return Ok(doc);
             }
             return BadRequest(ModelState);
@@ -52,7 +50,7 @@ namespace CaseStudyFinal.Controllers
         {
             var allowedExtensions = new string[]
             {
-                ".jpg",".jpeg",".png",".pdf"
+                ".pdf"
             };
 
             if (!allowedExtensions.Contains(Path.GetExtension(file.FileName).ToLower()))
@@ -60,9 +58,9 @@ namespace CaseStudyFinal.Controllers
                 ModelState.AddModelError("file", "Unsupported file format");
             }
 
-            if (file.Length > 10485760)
+            if (file.Length > 512000)
             {
-                ModelState.AddModelError("file", "file size cannot be more than 10 mb");
+                ModelState.AddModelError("file", "File size cannot be more than 5MB.");
             }
         }
 

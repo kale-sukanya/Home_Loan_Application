@@ -1,11 +1,8 @@
 ﻿using CaseStudyFinal.Data;
 using CaseStudyFinal.Interface;
 using CaseStudyFinal.Models;
-using CaseStudyFinal.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CaseStudyFinal.Controllers
 {
@@ -23,7 +20,7 @@ namespace CaseStudyFinal.Controllers
         }
 
         [HttpGet("/AdminGetAllLoanDetails")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<LoanDetails>>> GetLoanDetails()
         {
             var loanDetails = await _service.GetLoanDetailsAsync();
@@ -47,19 +44,9 @@ namespace CaseStudyFinal.Controllers
             return loanDetails;
         }
 
-        [HttpPut("/userUpdate/{id}")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> PutLoanDetails(string id, LoanDetails loanDetails)
-        {
-            await _service.UpdateLoanDetailsAsync(id, loanDetails);
-            return Ok(new
-            {
-                result = loanDetails
-            });
-        }
 
         [HttpPost("/userPostLoanDetails")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<LoanDetails>> PostLoanDetails(LoanDetails loanDetails)
         {
 
@@ -70,16 +57,6 @@ namespace CaseStudyFinal.Controllers
             });
         }
 
-        [HttpDelete("/userDeleteApplication/{id}")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> DeleteLoanDetails(string id)
-        {
-            await _service.DeleteLoanDetailsAsync(id);
-            return Ok(new
-            {
-                msg = "Loan Details Deleted Successfully"
-            });
-        }
 
         [HttpGet("applications/{email}")]
         public IActionResult GetApplicationsByEmail(string email)

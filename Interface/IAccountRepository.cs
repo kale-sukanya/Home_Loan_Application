@@ -1,6 +1,4 @@
-﻿using CaseStudyFinal.Data;
-using CaseStudyFinal.Models;
-using System.Threading.Tasks;
+﻿using CaseStudyFinal.Models;
 
 namespace CaseStudyFinal.Interface
 {

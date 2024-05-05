@@ -1,16 +1,9 @@
 ﻿using CaseStudyFinal.Models;
-using CaseStudyFinal.Repositories;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using CaseStudyFinal.Service;
 using CaseStudyFinal.Interface;
-using static System.Net.WebRequestMethods;
-using Org.BouncyCastle.Asn1.Ocsp;
 using CaseStudyFinal.DTO;
 
 namespace CaseStudyFinal.Service
@@ -38,7 +31,7 @@ namespace CaseStudyFinal.Service
 
             await _repository.RegisterUserAsync(model);
 
-            string recipientEmail = model.EmailId; // Get recipient email from the submitted form or database
+            string recipientEmail = model.EmailId; 
             await _emailService.SendReistrationSuccessEmail(recipientEmail, model.EmailId, model.PhoneNumber, model.Password);
 
             return true;
@@ -83,20 +76,28 @@ namespace CaseStudyFinal.Service
         public async Task<string> SendOtp(string emailId)
         {
             var user = _repository.GetUserByEmail(emailId);
-            string otp = GenerateOTP();
-            otpStorage[emailId] = otp;
-            try
+            if(user != null)
             {
-                string subject = "OTP for password reset";
-                string Body = $"Your OTP for password reset is: {otp}";
-                await _emailService.SendEmailOTP(emailId, Body, subject);
-            }
-            catch (Exception)
-            {
-                return "Error sending OTP email";
-            }
+                string otp = GenerateOTP();
+                otpStorage[emailId] = otp;
+                try
+                {
+                    string subject = "OTP for password reset";
+                    string Body = $"Your OTP for password reset is: {otp}";
+                    await _emailService.SendEmailOTP(emailId, Body, subject);
+                }
+                catch (Exception)
+                {
+                    return "Error sending OTP email";
+                }
 
-            return "OTP sent successfully";
+                return "OTP sent successfully";
+            }
+            else
+            {
+                return "User not found";
+            }
+            
         }
 
         public async Task<string> ResetPassword(ResetPassDto request)
@@ -132,30 +133,19 @@ namespace CaseStudyFinal.Service
 
         }
 
-        public async Task<string> ForgotUserAsync(string phone)
+        private string GetUserRole(string role)
         {
-            var user = _repository.GetUserByPhone(phone);
-            if (user != null)
+            if (role == "Admin")
             {
-                return "Your emailId is " + user.EmailId;
+                return _config["Jwt:AdminRole"]; 
             }
-
-            return "User Not found. Please register.";
-        }
-
-        private string GetUserRole(string userType)
-        {
-            if (userType == "Admin")
+            else if (role == "User")
             {
-                return _config["Jwt:AdminRole"]; // Get Admin role from configuration
-            }
-            else if (userType == "User")
-            {
-                return _config["Jwt:UserRole"]; // Get User role from configuration
+                return _config["Jwt:UserRole"]; 
             }
             else
             {
-                return string.Empty; // Default role
+                return string.Empty; 
             }
         }
 

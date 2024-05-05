@@ -1,6 +1,4 @@
 ﻿using CaseStudyFinal.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CaseStudyFinal.Interface
 {

@@ -1,8 +1,5 @@
 ﻿using CaseStudyFinal.Interface;
 using CaseStudyFinal.Models;
-using CaseStudyFinal.Repositories;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CaseStudyFinal.Service
 {
