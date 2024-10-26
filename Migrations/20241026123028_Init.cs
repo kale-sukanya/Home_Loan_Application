@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CaseStudyFinal.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,7 +25,8 @@ namespace CaseStudyFinal.Migrations
                     MaxLoanAmountGrantable = table.Column<double>(type: "float", nullable: false),
                     InterestRate = table.Column<double>(type: "float", nullable: false),
                     LoanAmount = table.Column<int>(type: "int", nullable: false),
-                    Tenure = table.Column<int>(type: "int", nullable: false)
+                    Tenure = table.Column<int>(type: "int", nullable: false),
+                    AppliedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,6 +45,29 @@ namespace CaseStudyFinal.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Registers", x => x.EmailId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Documents",
+                columns: table => new
+                {
+                    DocumentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FileExtension = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateUploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ApplicationId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LoanDetailsApplicationId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Documents", x => x.DocumentId);
+                    table.ForeignKey(
+                        name: "FK_Documents_Loans_LoanDetailsApplicationId",
+                        column: x => x.LoanDetailsApplicationId,
+                        principalTable: "Loans",
+                        principalColumn: "ApplicationId");
                 });
 
             migrationBuilder.CreateTable(
@@ -140,6 +164,11 @@ namespace CaseStudyFinal.Migrations
                 column: "PersonalDetailsAadharNo");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Documents_LoanDetailsApplicationId",
+                table: "Documents",
+                column: "LoanDetailsApplicationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PersonalDetails_LoanDetailsApplicationId",
                 table: "PersonalDetails",
                 column: "LoanDetailsApplicationId");
@@ -154,6 +183,9 @@ namespace CaseStudyFinal.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "Documents");
 
             migrationBuilder.DropTable(
                 name: "ApplicationTracking");

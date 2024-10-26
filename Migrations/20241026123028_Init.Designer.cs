@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CaseStudyFinal.Migrations
 {
     [DbContext(typeof(CaseStudyFinalContext))]
-    [Migration("20240410104806_Added Documents Table")]
-    partial class AddedDocumentsTable
+    [Migration("20241026123028_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -116,6 +116,9 @@ namespace CaseStudyFinal.Migrations
                 {
                     b.Property<string>("ApplicationId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("AppliedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("EmployerName")
                         .IsRequired()
